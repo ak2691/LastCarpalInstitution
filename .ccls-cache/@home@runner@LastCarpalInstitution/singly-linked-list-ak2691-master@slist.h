@@ -3,13 +3,51 @@
 Header file for single linked list class library
 
 */
+#include <string>
+#include <iostream>
 
 
-// add(value)				//Adds a new value to the end of this list.
+class Info {
+  public:
+    char code[10];
+    int lat = 0;
+    int lon = 0;
 
-// clear()					//Removes all elements from this list.
+};
 
-// equals(list)				//Returns true if the two lists contain the same elements in the same order.
+struct Node {
+  Info info;
+  Node* next;
+};
+
+
+
+class List {
+public:
+  Node* head;
+  int size;
+  List() {
+    head = nullptr;
+  }
+  void add(Node* node);				//Adds a new value to the end of this l
+  void clear();					//Removes all elements from this list.
+  bool equals(List* l);
+  Node* get(int idx);
+  void insert(int idx, Node* val);
+  void exchg(int idx1, int idx2);
+  void swap(int idx1, int idx2);
+  bool isEmpty();
+  //mapall
+  void remove(int idx);
+  void set(int idx, Node* val);
+  int ListSize();
+  List subList(int idx, int length);
+  std::string toString();
+
+};
+  
+
+  //Returns true if the two lists contain the same elements in the same order.
 
 //get(index)				//Returns the element at the specified index in this list.
 

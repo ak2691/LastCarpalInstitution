@@ -46,8 +46,8 @@ int main()
     Airport* airportArr[13500];			// Replace array with Linked List
     int   airportCount;
     //Airport* a[13500];
-    
-    infile.open ("./USAirportCodes.csv", ifstream::in);
+    cout << "TEST";
+    infile.open ("airport-codes_US.csv", ifstream::in);
     if (infile.is_open())
     {
         int   c=0;
@@ -60,8 +60,7 @@ int main()
             infile.getline(cNum, 256, '\n');
             airportArr[c]->latitude = atof(cNum);
 
-            if (!(c % 1000))
-                cout << airportArr[c]->code << " long: " << airportArr[c]->longitude << " lat: " << airportArr[c]->latitude <<  endl;
+            
 
             /*
             if (!(c % 1000))

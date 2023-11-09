@@ -21,7 +21,8 @@
 #include <fstream>
 #include <cmath> 
 #include "slist.h"
-
+#define rlat 30.1975
+#define rlon -97.6664
 using namespace std;
 
 class Airport
@@ -41,29 +42,62 @@ double distanceEarth(double lat1d, double lon1d, double lat2d, double lon2d);
 int main()
 {
     ifstream infile;
-    int i=0;
-    char cNum[10] ;
-    Airport* airportArr[13500];			// Replace array with Linked List
-    int   airportCount;
+    //int i=0;
+    char cNum[100] ;
+    List* airportList = new List();
+    List* airportHundred = new List();
+    
+    //Airport* airportArr[13500];			// Replace array with Linked List
+    //int   airportCount;
+    double m = 0.0;
+    double kmMiles = 160.934;
+    Node* maxNode = new Node();
     //Airport* a[13500];
     
-    infile.open ("./USAirportCodes.csv", ifstream::in);
+    infile.open ("airport-codes_US.csv", ifstream::in);
     if (infile.is_open())
     {
-        int   c=0;
+        //int   c=0;
+        string away;
+        char throwaway[256];
+        getline(infile, away);
+        int counter = 0;
         while (infile.good())
         {
-            airportArr[c] = new Airport();
-            infile.getline(airportArr[c]->code, 256, ',');
+            Node* node = new Node();
+            string check;
+            infile.getline(node->info.code, 256, ',');
+            
+            getline(infile, check, ',');
+            
             infile.getline(cNum, 256, ',');
-            airportArr[c]->longitude = atof(cNum);
-            infile.getline(cNum, 256, '\n');
-            airportArr[c]->latitude = atof(cNum);
+            infile.getline(cNum, 256, ',');
+            node->info.lon = atof(cNum);
+            infile.getline(cNum, 256, ',');
+            node->info.lat = atof(cNum);
+            infile.getline(throwaway, 256, '\n');
 
-            if (!(c % 1000))
-                cout << airportArr[c]->code << " long: " << airportArr[c]->longitude << " lat: " << airportArr[c]->latitude <<  endl;
-
-            /*
+            //cout << node->info.code << " long: " << node->info.lon << " lat: " << node->info.lat <<  endl;
+            if(check.find("airport")!= string::npos) {
+              airportList->add(node);
+              if(distanceEarth(rlat, rlon,node->info.lat, node->info.lon) > m) {
+                m = distanceEarth(rlat, rlon,node->info.lat, node->info.lon);
+                maxNode = node;
+              }
+              if(distanceEarth(rlat, rlon, node->info.lat, node->info.lon)<= kmMiles) {
+                airportHundred->add(node);
+                counter++;
+                cout << "Number: " << counter << " " << node->info.code << " long: " << node->info.lon << " lat: " << node->info.lat <<  endl;
+              }
+            }
+            
+            
+            /*if(distanceEarth(node->info.lat, node->info.lon, rlat, rlon) <= 100) {
+            
+            }*/
+//while adding nodes check if node's distance is greater than current max distance. After iterating through file and adding all nodes, max should be found
+//while adding nodes check if node's distance is 100 or less
+          /*
             if (!(c % 1000))
             {
                 cout << airportArr[c]->code << " long: " << airportArr[c]->longitude << " lat: " << airportArr[c]->latitude <<  endl;
@@ -72,20 +106,20 @@ int main()
             */
 
             
-            i++ ;
-            c++;
+            //i++ ;
+            //c++;
         }
-        airportCount = c-1;
+        //airportCount = c-1;
         infile.close();
         
-         for (int c=0; c < airportCount; c++)
+         /*for (int c=0; c < airportCount; c++)
             if (!(c % 1000))
             {
                 cout << airportArr[c]->code << " long: " << airportArr[c]->longitude << " lat: " << airportArr[c]->latitude <<  endl;
                 cout << airportArr[c+1]->code << " long: " << airportArr[c+1]->longitude << " lat: " << airportArr[c+1]->latitude <<  endl;
                 cout <<"Distance between " << airportArr[c]->code << " and " << airportArr[c+1]->code << " is "
                   << distanceEarth( airportArr[c]->longitude, airportArr[c]->latitude , airportArr[c+1]->longitude, airportArr[c+1]->latitude) << endl;
-            }
+            }*/
 
 
 
@@ -94,7 +128,7 @@ int main()
     {
         cout << "Error opening file";
     }
- 
+  cout << "Farthest airport: " << maxNode->info.code << " long: " << maxNode->info.lon << " lat: " << maxNode->info.lat <<  endl;
 
 
     
@@ -104,6 +138,7 @@ int main()
 
 #define pi 3.14159265358979323846
 #define earthRadiusKm 6371.0
+
 
 // This function converts decimal degrees to radians
 double deg2rad(double deg) {

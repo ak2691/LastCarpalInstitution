@@ -16,11 +16,11 @@ Class Library File
 
 void List::add(Node* val) {
   Node* curr = head;
-  while(curr != nullptr) {
+  while(curr->next != nullptr) {
     curr = curr->next;
     
   }
-  curr = val;
+  curr->next = val;
   
   
   
