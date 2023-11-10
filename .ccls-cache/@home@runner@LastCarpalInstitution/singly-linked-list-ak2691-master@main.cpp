@@ -21,9 +21,10 @@
 #include <fstream>
 #include <cmath> 
 #include "slist.h"
-
+#define rlat 30.1975
+#define rlon -97.6664
 using namespace std;
-
+//test
 class Airport
 {
 public:
@@ -35,56 +36,80 @@ public:
 
 
 
-void simpleSortTotal(Airport* s[], int c);
+void simpleSortTotal(List* list, List* org);
+
+
+
 double distanceEarth(double lat1d, double lon1d, double lat2d, double lon2d);
+
 
 int main()
 {
     ifstream infile;
-    int i=0;
-    char cNum[10] ;
-    Airport* airportArr[13500];			// Replace array with Linked List
-    int   airportCount;
+    //int i=0;
+    char cNum[100] ;
+    List* airportList = new List();
+    List* organizedList = new List();
+    //List* airportHundred = new List();
+    
+    //Airport* airportArr[13500];			// Replace array with Linked List
+    //int   airportCount;
+    //double m = 0.0;
+    double kmMiles = 160.934;
+    //Node* maxNode = new Node();
+    
     //Airport* a[13500];
-    cout << "TEST";
+    
     infile.open ("airport-codes_US.csv", ifstream::in);
     if (infile.is_open())
     {
-        int   c=0;
+        //int   c=0;
+        string away;
+        char throwaway[256];
+        getline(infile, away);
+        int counter = 0;
         while (infile.good())
         {
-            airportArr[c] = new Airport();
-            infile.getline(airportArr[c]->code, 256, ',');
+            Node* node = new Node();
+            string check;
+            infile.getline(node->info.code, 256, ',');
+            
+            getline(infile, check, ',');
+            
             infile.getline(cNum, 256, ',');
-            airportArr[c]->longitude = atof(cNum);
-            infile.getline(cNum, 256, '\n');
-            airportArr[c]->latitude = atof(cNum);
+            infile.getline(cNum, 256, ',');
+            node->info.lon = atof(cNum);
+            infile.getline(cNum, 256, ',');
+            node->info.lat = atof(cNum);
+            infile.getline(throwaway, 256, '\n');
 
-            
-
-            /*
-            if (!(c % 1000))
-            {
-                cout << airportArr[c]->code << " long: " << airportArr[c]->longitude << " lat: " << airportArr[c]->latitude <<  endl;
-                cout << airportArr[c+1]->code << endl; //" long: " << airportArr[c+1]->longitude << " lat: " << airportArr[c+1]->latitude <<  endl;                               
+            //cout << node->info.code << " long: " << node->info.lon << " lat: " << node->info.lat <<  endl;
+            if(check.find("airport")!= string::npos) {
+              airportList->add(node);
+              
+              /*if(distanceEarth(rlat, rlon,node->info.lat, node->info.lon) > m) {
+                m = distanceEarth(rlat, rlon,node->info.lat, node->info.lon);
+                maxNode = node;
+              }
+              */
+              if(distanceEarth(rlat, rlon, node->info.lat, node->info.lon)<= kmMiles) {
+                
+                counter++;
+                cout << "Number: " << counter << " " << node->info.code << " long: " << node->info.lon << " lat: " << node->info.lat <<  endl;
+              }
             }
-            */
+            
+            
+            
+
 
             
-            i++ ;
-            c++;
+           
         }
-        airportCount = c-1;
+       
         infile.close();
         
-         for (int c=0; c < airportCount; c++)
-            if (!(c % 1000))
-            {
-                cout << airportArr[c]->code << " long: " << airportArr[c]->longitude << " lat: " << airportArr[c]->latitude <<  endl;
-                cout << airportArr[c+1]->code << " long: " << airportArr[c+1]->longitude << " lat: " << airportArr[c+1]->latitude <<  endl;
-                cout <<"Distance between " << airportArr[c]->code << " and " << airportArr[c+1]->code << " is "
-                  << distanceEarth( airportArr[c]->longitude, airportArr[c]->latitude , airportArr[c+1]->longitude, airportArr[c+1]->latitude) << endl;
-            }
+        
 
 
 
@@ -93,7 +118,12 @@ int main()
     {
         cout << "Error opening file";
     }
- 
+    
+  
+    
+    simpleSortTotal(airportList, organizedList);
+    cout << organizedList->head->info.code << " " << organizedList->head->info.lat << " " << organizedList->head->info.lon << "\n";
+    
 
 
     
@@ -103,6 +133,7 @@ int main()
 
 #define pi 3.14159265358979323846
 #define earthRadiusKm 6371.0
+
 
 // This function converts decimal degrees to radians
 double deg2rad(double deg) {
@@ -135,13 +166,36 @@ double distanceEarth(double lat1d, double lon1d, double lat2d, double lon2d) {
   return 2.0 * earthRadiusKm * asin(sqrt(u * u + cos(lat1r) * cos(lat2r) * v * v));
 }
 
+void simpleSortTotal(List* list, List* org)
+{
+  
+  
+
+  Node* current = list->head;
+  Node* nextNode;
+  while(current!=nullptr) {
+    nextNode = current->next;
+    int counter = 0;
+    Node *curr = org->head;
+    
+    while(curr != nullptr && distanceEarth(curr->info.lat, curr->info.lon, rlat, rlon) > distanceEarth(current->info.lat, current->info.lon, rlat, rlon)) {
+      curr = curr->next;
+      counter++;
+    }
+    org->insert(counter,current);
+    current = nextNode;
+
+    //logic: insertion sort, go through each node in list, for each node check if it is less than the next node, swap if it is. In this case, we just insert wherever the node breaks the condition
+    
+  }
+  
+ 
+}
 
 /*
 	Provide sort routine on linked list
 */
-/*
-void simpleSortTotal()
-{
 
-}
-*/
+
+
+

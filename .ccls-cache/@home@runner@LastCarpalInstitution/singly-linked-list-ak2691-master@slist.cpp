@@ -15,12 +15,16 @@ Class Library File
 // Destructor
 
 void List::add(Node* val) {
-  Node* curr = head;
-  while(curr->next != nullptr) {
-    curr = curr->next;
-    
+  Node* temp = val;
+  if(head == nullptr) {
+    head = temp;
+    tail = temp;
   }
-  curr->next = val;
+  else {
+    tail->next = temp;
+    tail = tail->next;
+  }
+  
   
   
   
@@ -53,10 +57,29 @@ Node* List::get(int idx) {
   return curr;
 }
 void List::insert(int idx, Node* val) {
-  Node* curr = get(idx-1);
-  Node* temp = curr->next;
-  curr->next = val;
-  val->next = temp;
+  Node* input = val;
+  Node* newNode = new Node();
+  newNode->info = input->info;
+  if(idx == 0 && head == nullptr) {
+    head = newNode;
+    
+    
+    
+  }
+  else if(idx == 0 && head!=nullptr) {
+    
+    newNode->next = head;
+    head = newNode;
+    
+    
+  }
+  else {
+    Node* curr = get(idx-1);// 1
+    Node* temp = curr->next;// null
+    curr->next = input;// 2
+    input->next = temp;//null
+  }
+  
   
   
 }
@@ -73,11 +96,12 @@ void List::swap(int idx1, int idx2) {
   Node* two = get(idx2);
   Node* onePrev = get(idx1-1);
   Node* twoPrev = get(idx2 - 1);
-  
+  Node* oneNext = get(idx1 + 1);
+  //Node* twoNext = get(idx2+1);
   
   one->next = two->next;
   twoPrev->next = one;
-  two->next = one->next;
+  two->next = oneNext;
   onePrev->next = two;
 
   

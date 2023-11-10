@@ -10,14 +10,15 @@ Header file for single linked list class library
 class Info {
   public:
     char code[10];
-    int lat = 0;
-    int lon = 0;
+    double lat = 0;
+    double lon = 0;
 
 };
 
 struct Node {
   Info info;
-  Node* next;
+  Node* next = nullptr;
+  
 };
 
 
@@ -25,9 +26,11 @@ struct Node {
 class List {
 public:
   Node* head;
+  Node* tail;
   int size;
   List() {
     head = nullptr;
+    tail = nullptr;
   }
   void add(Node* node);				//Adds a new value to the end of this l
   void clear();					//Removes all elements from this list.
@@ -41,8 +44,8 @@ public:
   void remove(int idx);
   void set(int idx, Node* val);
   int ListSize();
-  List subList(int idx, int length);
-  std::string toString();
+  
+
 
 };
   

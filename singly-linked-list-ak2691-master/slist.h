@@ -17,7 +17,8 @@ class Info {
 
 struct Node {
   Info info;
-  Node* next;
+  Node* next = nullptr;
+  
 };
 
 
@@ -25,9 +26,11 @@ struct Node {
 class List {
 public:
   Node* head;
+  Node* tail;
   int size;
   List() {
     head = nullptr;
+    tail = nullptr;
   }
   void add(Node* node);				//Adds a new value to the end of this l
   void clear();					//Removes all elements from this list.
@@ -41,8 +44,8 @@ public:
   void remove(int idx);
   void set(int idx, Node* val);
   int ListSize();
-  List subList(int idx, int length);
-  std::string toString();
+  
+
 
 };
   
